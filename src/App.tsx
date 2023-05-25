@@ -1,19 +1,9 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { select } from "d3";
 import "./App.css";
-import { type Taxonomy, test, taxonomySorter } from "./utils/sorter";
-
-const UNSPLASH_CLIENT_ID = "9MUAPy3db_ED7Y7KBFfenaSY-FXnMxkCwqqrEg3-s-I";
-
-interface Params {
-  [key: string]: string;
-}
-const encodeQueryData = (data: Params) => {
-  const ret = [];
-  for (let d in data)
-    ret.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
-  return ret.join("&");
-};
+import { type Taxonomy, taxonomySorter } from "./utils/sorter";
+import { getTaxonomy } from "./utils/getTaxonomy";
+import { getImg } from "./utils/getImg";
 
 function App() {
   interface Animal {
@@ -21,33 +11,32 @@ function App() {
     imgSrc: string | null;
   }
 
-  const [data, setData] = useState([
-    { tax: test[0], imgSrc: null },
-    { tax: test[1], imgSrc: null },
-    { tax: test[2], imgSrc: null },
-  ] as Animal[]);
+  const [data, setData] = useState([] as Animal[]);
   const svgRef = useRef() as RefObject<SVGSVGElement>;
 
-  const getDataFromSearch = async (animals: Animal[]) => {
+  const getDataFromSearch = async (animalNames: string[]) => {
     let newData: Animal[] = [];
-    for (const animal of animals) {
-      const params = encodeQueryData({
-        query: animal.tax.vernacularName,
-        client_id: UNSPLASH_CLIENT_ID,
-      });
-      const result = await fetch(
-        `https://api.unsplash.com/search/photos?${params}`
-      );
-      const json: any = await result.json();
-      const src: string = json.results[0].urls.regular;
-      newData.push({ ...animal, imgSrc: src });
-      console.log(newData);
+    for (const name of animalNames) {
+      const tax = await getTaxonomy(name);
+      console.log(tax);
+      const src = await getImg(tax?.vernacularName!);
+      newData.push({ tax: tax!, imgSrc: src });
     }
-    setData(newData);
+    setData(taxonomySorter(newData).reverse());
   };
 
   useEffect(() => {
-    getDataFromSearch(data);
+    getDataFromSearch([
+      "Homo sapiens",
+      "Pan troglodytes",
+      "Canis lupus familiaris",
+      "Hippopotamus amphibius",
+      "Giraffa camelopardalis",
+      "Felis catus",
+      "Bos taurus",
+      // "Sus scrofa domesticus",
+      "Equus caballus",
+    ]);
     console.log(svgRef);
     const svg = select(svgRef.current);
 
@@ -74,7 +63,7 @@ function App() {
               : `${i * (1 / (data.length - 1)) * 100}%`
           )
       );
-  }, []);
+  }, [data]);
 
   return (
     <div className="App">
@@ -92,7 +81,7 @@ function App() {
           width: "80%",
         }}
       >
-        {taxonomySorter(data).map(({ tax: { vernacularName }, imgSrc }) => (
+        {data.map(({ tax: { vernacularName }, imgSrc }) => (
           <div
             style={{
               display: "flex",
