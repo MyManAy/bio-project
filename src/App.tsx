@@ -1,6 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { select } from "d3";
 import "./App.css";
+import { type Taxonomy, test, taxonomySorter } from "./utils/sorter";
 
 const UNSPLASH_CLIENT_ID = "9MUAPy3db_ED7Y7KBFfenaSY-FXnMxkCwqqrEg3-s-I";
 
@@ -16,24 +17,14 @@ const encodeQueryData = (data: Params) => {
 
 function App() {
   interface Animal {
-    name: string;
-    z: number;
+    tax: Taxonomy;
     imgSrc: string | null;
-  }
-  interface Taxonomy {
-    scientific_name: string;
-    genus: string;
-    family: string;
-    order: string;
-    class: string;
-    phylum: string;
-    kingdom: string;
   }
 
   const [data, setData] = useState([
-    { name: "human", z: 1, imgSrc: null },
-    { name: "monkey", z: 0.95, imgSrc: null },
-    { name: "dog", z: 0.9, imgSrc: null },
+    { tax: test[0], imgSrc: null },
+    { tax: test[1], imgSrc: null },
+    { tax: test[2], imgSrc: null },
   ] as Animal[]);
   const svgRef = useRef() as RefObject<SVGSVGElement>;
 
@@ -41,7 +32,7 @@ function App() {
     let newData: Animal[] = [];
     for (const animal of animals) {
       const params = encodeQueryData({
-        query: animal.name,
+        query: animal.tax.vernacularName,
         client_id: UNSPLASH_CLIENT_ID,
       });
       const result = await fetch(
@@ -101,20 +92,18 @@ function App() {
           width: "80%",
         }}
       >
-        {data
-          .sort((a, b) => a.z - b.z)
-          .map(({ name, imgSrc }) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img style={{ width: 150, height: 100 }} src={imgSrc!}></img>
-              <div style={{ width: 100 }}>{name}</div>
-            </div>
-          ))}
+        {taxonomySorter(data).map(({ tax: { vernacularName }, imgSrc }) => (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <img style={{ width: 150, height: 100 }} src={imgSrc!}></img>
+            <div style={{ width: 100 }}>{vernacularName}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

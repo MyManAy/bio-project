@@ -1,4 +1,4 @@
-interface Taxonomy {
+export interface Taxonomy {
   [key: string]: string;
   scientificName: string;
   vernacularName: string;
@@ -8,6 +8,10 @@ interface Taxonomy {
   class: string;
   phylum: string;
   kingdom: string;
+}
+interface Animal {
+  tax: Taxonomy;
+  imgSrc: string | null;
 }
 const human = {
   kingdom: "Metazoa",
@@ -19,7 +23,7 @@ const human = {
   scientificName: "Homo sapiens",
   vernacularName: "human",
 };
-const monkey = {
+const chimpanzee = {
   kingdom: "Metazoa",
   phylum: "Chordata",
   class: "Mammalia",
@@ -41,12 +45,12 @@ const dog = {
 };
 const priority = ["genus", "family", "order", "class", "phylum", "kingdom"];
 
-export const taxonomySorter = (animals: Taxonomy[]) => {
+export const taxonomySorter = (animals: Animal[]) => {
   let unsorted = animals;
   let sorted = [animals[0]];
   for (const classification of priority) {
     for (let i = 1; i < unsorted.length; i++) {
-      if (unsorted[0][classification] === unsorted[i][classification]) {
+      if (unsorted[0].tax[classification] === unsorted[i].tax[classification]) {
         sorted.push(unsorted[i]);
         unsorted.splice(i, 1);
       }
@@ -54,3 +58,5 @@ export const taxonomySorter = (animals: Taxonomy[]) => {
   }
   return sorted;
 };
+
+export const test = [human, chimpanzee, dog];
