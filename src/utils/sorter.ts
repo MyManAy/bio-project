@@ -1,17 +1,17 @@
+interface Animal {
+  tax: Taxonomy;
+  vernacularName: string;
+  imgSrc: string | null;
+}
 export interface Taxonomy {
   [key: string]: string;
   scientificName: string;
-  vernacularName: string;
   genus: string;
   family: string;
   order: string;
   class: string;
   phylum: string;
   kingdom: string;
-}
-interface Animal {
-  tax: Taxonomy;
-  imgSrc: string | null;
 }
 const human = {
   kingdom: "Metazoa",
@@ -21,7 +21,6 @@ const human = {
   family: "Hominidae",
   genus: "Homo",
   scientificName: "Homo sapiens",
-  vernacularName: "human",
 };
 const chimpanzee = {
   kingdom: "Metazoa",
@@ -31,7 +30,6 @@ const chimpanzee = {
   family: "Hominidae",
   genus: "Pan",
   scientificName: "Pan troglodytes",
-  vernacularName: "chimpanzee",
 };
 const dog = {
   kingdom: "Animalia",
@@ -41,7 +39,6 @@ const dog = {
   family: "Canidae",
   genus: "Canis",
   scientificName: "Canis lupus familiaris",
-  vernacularName: "dog",
 };
 const priority = ["genus", "family", "order", "class", "phylum", "kingdom"];
 

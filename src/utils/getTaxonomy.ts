@@ -19,21 +19,16 @@ export const getTaxonomy = async (animalName: string) => {
   );
   const json: any = await result.json();
   for (const animalData of json.results) {
-    let vernacularName = "";
-    for (const vernacular of animalData.vernacularNames) {
-      if (vernacular.language === "eng") {
-        vernacularName = vernacular.vernacularName;
-      }
-    }
+    console.log("results: ");
+    console.log(animalData);
+    console.log(animalData.genus);
     if (
       animalData.genus &&
       animalData.class &&
       animalData.order &&
       animalData.kingdom &&
       animalData.phylum &&
-      animalData.family &&
-      animalData.scientificName &&
-      vernacularName.length !== 0
+      animalData.family
     ) {
       const tax: Taxonomy = {
         genus: animalData.genus,
@@ -43,7 +38,6 @@ export const getTaxonomy = async (animalName: string) => {
         phylum: animalData.phylum,
         family: animalData.family,
         scientificName: animalName,
-        vernacularName: vernacularName,
       };
       return tax;
     }

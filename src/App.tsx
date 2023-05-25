@@ -8,35 +8,63 @@ import { getImg } from "./utils/getImg";
 function App() {
   interface Animal {
     tax: Taxonomy;
+    vernacularName: string;
     imgSrc: string | null;
   }
+  type AnimalName = {
+    scientific: string;
+    vernacular: string;
+  };
 
   const [data, setData] = useState([] as Animal[]);
   const svgRef = useRef() as RefObject<SVGSVGElement>;
 
-  const getDataFromSearch = async (animalNames: string[]) => {
+  const getDataFromSearch = async (animalNames: AnimalName[]) => {
     let newData: Animal[] = [];
     for (const name of animalNames) {
-      const tax = await getTaxonomy(name);
+      const tax = await getTaxonomy(name.scientific);
       console.log(tax);
-      const src = await getImg(tax?.vernacularName!);
-      newData.push({ tax: tax!, imgSrc: src });
+      const src = await getImg(name.vernacular);
+      newData.push({ tax: tax!, imgSrc: src, vernacularName: name.vernacular });
     }
     setData(taxonomySorter(newData).reverse());
   };
 
   useEffect(() => {
-    getDataFromSearch([
-      "Homo sapiens",
-      "Pan troglodytes",
-      "Canis lupus familiaris",
-      "Hippopotamus amphibius",
-      "Giraffa camelopardalis",
-      "Felis catus",
-      "Bos taurus",
-      // "Sus scrofa domesticus",
-      "Equus caballus",
-    ]);
+    //   const names = [
+    //   "Homo sapiens",
+    //   "Pan troglodytes",
+    //   "Canis lupus familiaris",
+    //   // "Hippopotamus amphibius",
+    //   // "Giraffa camelopardalis",
+    //   // "Felis catus",
+    //   // "Bos taurus",
+    //   // // "Sus scrofa domesticus",
+    //   // "Equus caballus",
+    // ]
+    const animalNames = [
+      {
+        scientific: "Homo sapiens",
+        vernacular: "human",
+      },
+      {
+        scientific: "Pan troglodytes",
+        vernacular: "chimpanzee",
+      },
+      {
+        scientific: "Canis lupus familiari",
+        vernacular: "dog",
+      },
+      {
+        scientific: "Equus caballus",
+        vernacular: "horse",
+      },
+      {
+        scientific: "Sus scrofa domesticus",
+        vernacular: "pig",
+      },
+    ];
+    getDataFromSearch(animalNames);
     console.log(svgRef);
     const svg = select(svgRef.current);
 
@@ -81,7 +109,7 @@ function App() {
           width: "80%",
         }}
       >
-        {data.map(({ tax: { vernacularName }, imgSrc }) => (
+        {data.map(({ vernacularName, imgSrc }) => (
           <div
             style={{
               display: "flex",
