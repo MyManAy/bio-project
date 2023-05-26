@@ -31,26 +31,14 @@ function App() {
   };
 
   useEffect(() => {
-    const animalNames = [
-      {
-        scientific: "Homo sapiens",
-        vernacular: "human",
-      },
-      {
-        scientific: "Pan troglodytes",
-        vernacular: "chimpanzee",
-      },
-      {
-        scientific: "Canis lupus familiari",
-        vernacular: "dog",
-      },
-      {
-        scientific: "Equus caballus",
-        vernacular: "horse",
-      },
-    ];
+    const queryParameters = new URLSearchParams(window.location.search);
+    const scientifics = queryParameters.get("animals")?.split(", ");
+    const vernaculars = queryParameters.get("vernaculars")?.split(", ");
+    const animalNames = scientifics!.map((item, i) => ({
+      scientific: item,
+      vernacular: vernaculars![i],
+    }));
     getDataFromSearch(animalNames);
-    console.log(svgRef);
     const svg = select(svgRef.current);
     svg.selectAll("line").remove();
     const MAX_HEIGHT = 400;

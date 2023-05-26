@@ -19,9 +19,6 @@ export const getTaxonomy = async (animalName: string) => {
   );
   const json: any = await result.json();
   for (const animalData of json.results) {
-    console.log("results: ");
-    console.log(animalData);
-    console.log(animalData.genus);
     if (
       animalData.genus &&
       animalData.class &&
