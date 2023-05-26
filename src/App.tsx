@@ -31,17 +31,6 @@ function App() {
   };
 
   useEffect(() => {
-    //   const names = [
-    //   "Homo sapiens",
-    //   "Pan troglodytes",
-    //   "Canis lupus familiaris",
-    //   // "Hippopotamus amphibius",
-    //   // "Giraffa camelopardalis",
-    //   // "Felis catus",
-    //   // "Bos taurus",
-    //   // // "Sus scrofa domesticus",
-    //   // "Equus caballus",
-    // ]
     const animalNames = [
       {
         scientific: "Homo sapiens",
@@ -59,17 +48,12 @@ function App() {
         scientific: "Equus caballus",
         vernacular: "horse",
       },
-      {
-        scientific: "Sus scrofa domesticus",
-        vernacular: "pig",
-      },
     ];
     getDataFromSearch(animalNames);
     console.log(svgRef);
     const svg = select(svgRef.current);
-
+    svg.selectAll("line").remove();
     const MAX_HEIGHT = 400;
-
     svg
       .selectAll("line")
       .data(data)
