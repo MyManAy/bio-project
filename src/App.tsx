@@ -4,7 +4,6 @@ import "./App.css";
 import { type Taxonomy, taxonomySorter } from "./utils/sorter";
 import { getTaxonomy } from "./utils/getTaxonomy";
 import { getImg } from "./utils/getImg";
-
 function App() {
   interface Animal {
     tax: Taxonomy;
@@ -18,7 +17,13 @@ function App() {
 
   const [data, setData] = useState([] as Animal[]);
   const svgRef = useRef() as RefObject<SVGSVGElement>;
-
+  const queryParameters = new URLSearchParams(window.location.search);
+  const scientifics = queryParameters.get("animals")?.split(", ");
+  const vernaculars = queryParameters.get("vernaculars")?.split(", ");
+  const animalNames = scientifics!.map((item, i) => ({
+    scientific: item,
+    vernacular: vernaculars![i],
+  }));
   const getDataFromSearch = async (animalNames: AnimalName[]) => {
     let newData: Animal[] = [];
     for (const name of animalNames) {
@@ -31,14 +36,9 @@ function App() {
   };
 
   useEffect(() => {
-    const queryParameters = new URLSearchParams(window.location.search);
-    const scientifics = queryParameters.get("animals")?.split(", ");
-    const vernaculars = queryParameters.get("vernaculars")?.split(", ");
-    const animalNames = scientifics!.map((item, i) => ({
-      scientific: item,
-      vernacular: vernaculars![i],
-    }));
-    getDataFromSearch(animalNames);
+    if (data.length === 0) {
+      getDataFromSearch(animalNames);
+    }
     const svg = select(svgRef.current);
     svg.selectAll("line").remove();
     const MAX_HEIGHT = 400;
@@ -81,7 +81,7 @@ function App() {
           width: "80%",
         }}
       >
-        {data.map(({ vernacularName, imgSrc }) => (
+        {data.map(({ vernacularName, imgSrc, tax: { scientificName } }) => (
           <div
             style={{
               display: "flex",
@@ -91,6 +91,9 @@ function App() {
           >
             <img style={{ width: 150, height: 100 }} src={imgSrc!}></img>
             <div style={{ width: 100 }}>{vernacularName}</div>
+            <div style={{ width: 100, fontStyle: "italic" }}>
+              {scientificName}
+            </div>
           </div>
         ))}
       </div>

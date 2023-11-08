@@ -1,0 +1,5 @@
+http://localhost:3000/?animals=Aquila%20chrysaetos,%20Ovis%20aries,%20Sus%20scrofa%20domesticus,%20Aquila%20chrysaetos&vernaculars=iguana,%20sheep,%20pig,%20eagle
+
+http://localhost:3000/?animals=Homo%20sapien,%20Pan%20troglodytes,%20Equus%20caballus,%20Canis%20lupus%20familiaris&vernaculars=human,%20chimpanzee,%20horse,%20dog
+
+http://localhost:3000/?animals=Nymphicus%20hollandicus,%20Pan%20troglodytes,%20Aquila%20chrysaetos&vernaculars=cockatiel,%20chimpanzee,%20eagle
